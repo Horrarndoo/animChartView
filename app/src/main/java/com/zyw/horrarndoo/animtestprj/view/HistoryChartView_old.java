@@ -1,4 +1,4 @@
-package com.zyw.horrarndoo.animtestprj.view;
+package com.zyw.animtestprj.view;
 
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathEffect;
@@ -14,17 +15,17 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
-import com.zyw.horrarndoo.animtestprj.R;
-import com.zyw.horrarndoo.animtestprj.utils.GetDpSpUtils;
-import com.zyw.horrarndoo.animtestprj.utils.LogUtils;
+import com.zyw.animtestprj.R;
+import com.zyw.animtestprj.utils.GetDpSpUtils;
+import com.zyw.animtestprj.utils.LogUtils;
 
 /**
- * åŽ†å²è®°å½•æŸ¥è¯¢å›¾è¡¨
- * åŸºäºŽpathMeasure+å±žæ€§åŠ¨ç”»å®žçŽ°
+ * ÀúÊ·¼ÇÂ¼²éÑ¯Í¼±í
+ * Í¨¹ýPathMeasure+ÊôÐÔ¶¯»­µÄ·½Ê½ÊµÏÖ
  * @author zyw
- * @creation 2017-03-06
+ * @creation 2017-03-07
  */
-public class HistoryChartView_old extends View {
+public class HistoryChartView extends View {
 
 	private String TAG = "HistoryChartView";
 
@@ -46,7 +47,7 @@ public class HistoryChartView_old extends View {
 
 	private float mYUnitTextSize;
 
-	// Ô²ï¿½ë¾¶
+	// Ô²°ë¾¶
 	private int circleRadius = 8;
 
 	private int lineStrokeWidth = 3;
@@ -60,29 +61,29 @@ public class HistoryChartView_old extends View {
 	private Path mRoomTempPath;
 	private Path mTargetTempPath;
 
-	// ï¿½ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½×´Í¼ï¿½Äµï¿½Ç°ï¿½ï¿½ï¿½ï¿½
+	// ÉèÖÃÃ¿ÌõÖù×´Í¼µÄµ±Ç°±ÈÀý
 	private Float[] currentBarProgress;
 
-	// X,Yï¿½ï¿½Äµï¿½Î»ï¿½ï¿½ï¿½ï¿½
+	// X,YÖáµÄµ¥Î»³¤¶È
 	private float Xscale = 20;
 	private float Yscale = 20;
 
-	// ï¿½ï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½Ü³ï¿½ï¿½ï¿½
+	// »æÖÆXÖá×Ü³¤¶È
 	private float xLength;
-	// ï¿½ï¿½ï¿½ï¿½Yï¿½ï¿½ï¿½Ü³ï¿½ï¿½ï¿½
+	// »æÖÆYÖá×Ü³¤¶È
 	private float yLength;
 
-	// Xï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½Úµï¿½ï¿½Æ«ï¿½ï¿½Î»ï¿½ï¿½
+	// XÖáµÚ1¸ö½ÚµãµÄÆ«ÒÆÎ»ÖÃ
 	private float xFirstPointOffset;
 	// private int yFirstPointOffset;
 
-	// yï¿½ï¿½ï¿½ï¿½Ê¾ï¿½Ä½Úµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	// yÖáÏÔÊ¾µÄ½Úµã¼ä¸ô¾àÀë
 	private int yScaleForData = 1;
 
-	// xï¿½ï¿½ï¿½ï¿½Ê¾ï¿½Ä½Úµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	// xÖáÏÔÊ¾µÄ½Úµã¼ä¸ô¾àÀë
 	private int xScaleForData = 1;
 
-	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«
+	// »­ÏßÑÕÉ«
 	private int lineColor;
 
 	private int roomTempLineColor;
@@ -94,13 +95,13 @@ public class HistoryChartView_old extends View {
 	private String mY1UnitText;
 	private String mY2UnitText;
 
-	private int mMode = 1;// ï¿½ï¿½Activityï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½Öµ 1ï¿½ï¿½ï¿½ï¿½ 2ï¿½ï¿½ï¿½ï¿½ 3ï¿½ï¿½ï¿½ï¿½ 4ï¿½ï¿½ï¿½ï¿½
+	private int mMode = 1;// ´ÓActivity´«¹ýÀ´µÄÄ£Ê½Öµ 1£ºÌì 2£ºÖÜ 3£ºÔÂ 4£ºÄê
 
-	// Ô­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	// Ô­µã×ø±ê
 	private float Xpoint;
 	private float Ypoint;
 
-	// X,Yï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
+	// X,YÖáÉÏÃæµÄÏÔÊ¾ÎÄ×Ö
 	private String[] Xlabel = { "1", "2", "3", "4", "5", "6", "7" };
 	private String[] Ylabel = { "0", "9", "18", "27", "36" };
 	private String[] Ylabel2 = { "0", "25", "50", "75", "100" };
@@ -115,7 +116,7 @@ public class HistoryChartView_old extends View {
 	private final static int MONTH_MODE = 2;
 	private final static int YEAR_MODE = 3;
 
-	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	// ÇúÏßÊý¾Ý
 	private float[] roomTempDataArray = { 15, 15, 15, 15, 15, 15, 15 };
 	private float[] targetTempDataArray = { 16, 16, 16, 16, 16, 16, 16 };
 	private float[] powerOnTimeDataArray = { 100, 100, 100, 100, 100, 100, 100 };
@@ -126,7 +127,7 @@ public class HistoryChartView_old extends View {
 	private Paint roomTempPaint;
 	private PathEffect mEffect;
 
-	public HistoryChartView_old(Context context, String[] xlabel, String[] ylabel,
+	public HistoryChartView(Context context, String[] xlabel, String[] ylabel,
 			float[] roomDataArray) {
 		super(context);
 		this.Xlabel = xlabel;
@@ -134,7 +135,7 @@ public class HistoryChartView_old extends View {
 		this.roomTempDataArray = roomDataArray;
 	}
 
-	public HistoryChartView_old(Context context, AttributeSet attrs,
+	public HistoryChartView(Context context, AttributeSet attrs,
 			int defStyleAttr) {
 		super(context, attrs, defStyleAttr);
 
@@ -147,7 +148,7 @@ public class HistoryChartView_old extends View {
 		initPath();
 	}
 
-	public HistoryChartView_old(Context context, AttributeSet attrs) {
+	public HistoryChartView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		LogUtils.error(TAG,
 				"HistoryChartView(Context context, AttributeSet attrs)");
@@ -165,7 +166,7 @@ public class HistoryChartView_old extends View {
 		initPath();
 	}
 
-	public HistoryChartView_old(Context context) {
+	public HistoryChartView(Context context) {
 		super(context);
 
 		initPaint();
@@ -178,7 +179,7 @@ public class HistoryChartView_old extends View {
 	}
 
 	/**
-	 * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
+	 * ÉèÖÃÏÔÊ¾Êý¾Ý
 	 * 
 	 * @param strAlldata
 	 */
@@ -236,7 +237,7 @@ public class HistoryChartView_old extends View {
 	}
 
 	/**
-	 * ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	 * ³õÊ¼»¯Êý¾Ý
 	 */
 	private void initData() {
 		mCurrentPosition = new float[2];
@@ -250,7 +251,7 @@ public class HistoryChartView_old extends View {
 	}
 
 	/**
-	 * ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ß±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	 * ³õÊ¼»¯¿í¸ß±ÈÀýµÈÊý¾Ý
 	 */
 	public void initParams() {
 		// LogUtils.error(TAG, "initParams");
@@ -266,7 +267,7 @@ public class HistoryChartView_old extends View {
 	}
 
 	/**
-	 * ï¿½ï¿½Ê¼ï¿½ï¿½path
+	 * ³õÊ¼»¯path
 	 */
 	private void initPath() {
 		initRoomTempPath(roomTempDataArray);
@@ -274,7 +275,7 @@ public class HistoryChartView_old extends View {
 	}
 
 	/**
-	 * ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¶ï¿½ï¿½ï¿½ï¿½ï¿½
+	 * ³õÊ¼»¯·¿¼äÎÂ¶ÈÊý¾Ý
 	 * 
 	 * @param arrayRoomTempData
 	 */
@@ -289,7 +290,7 @@ public class HistoryChartView_old extends View {
 	}
 
 	/**
-	 * ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½è¶¨ï¿½Â¶ï¿½ï¿½ï¿½ï¿½ï¿½
+	 * ³õÊ¼»¯Éè¶¨ÎÂ¶ÈÊý¾Ý
 	 * 
 	 * @param arraySetTempData
 	 */
@@ -303,7 +304,7 @@ public class HistoryChartView_old extends View {
 	}
 
 	/**
-	 * ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	 * ³õÊ¼»¯¿ª»úÊ±¼äÊý¾Ý
 	 * 
 	 * @param arrayPowerTimeData
 	 */
@@ -318,7 +319,7 @@ public class HistoryChartView_old extends View {
 	}
 
 	/**
-	 * ï¿½ï¿½Ê¼ï¿½ï¿½Xï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	 * ³õÊ¼»¯XÖáÊý¾Ý
 	 */
 	private void initXData(String[] tempData) {
 		switch (mMode) {
@@ -418,7 +419,7 @@ public class HistoryChartView_old extends View {
 	}
 
 	/**
-	 * ï¿½ï¿½ï¿½ï¿½Xï¿½áµ¥Î»ï¿½ï¿½ï¿½ï¿½
+	 * ÉèÖÃXÖáµ¥Î»·ûºÅ
 	 * 
 	 * @param xUnit
 	 */
@@ -427,7 +428,7 @@ public class HistoryChartView_old extends View {
 	}
 
 	/**
-	 * ï¿½ï¿½ï¿½Æµï¿½Î»ï¿½ï¿½ï¿½ï¿½
+	 * »æÖÆµ¥Î»·ûºÅ
 	 * 
 	 * @param canvas
 	 */
@@ -442,17 +443,17 @@ public class HistoryChartView_old extends View {
 		drawY2Unit(canvas, p);
 	}
 
-	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	// »­ºáÖá
 	private void drawXLine(Canvas canvas, Paint p) {
 		p.setColor(getResources().getColor(R.color.saswell_yellow));
 		canvas.drawLine(Xpoint, Ypoint, xLength + MarginLeft, Ypoint, p);
 	}
 
-	// ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½
+	// »­»ÒÉ«ºáÖá
 	private void drawGreyXLine(Canvas canvas, Paint p) {
 		p.setColor(getResources().getColor(R.color.saswell_grey_line));
 		float startX = Xpoint + MarginLeft / 4;
-		// ï¿½ï¿½ï¿½ï¿½
+		// ×ÝÏò
 		for (int i = yScaleForData; (yLength - i * Yscale) >= 0; i += yScaleForData) {
 			float startY = Ypoint - i * Yscale;
 			canvas.drawLine(startX - MarginLeft / 4, startY, xLength
@@ -460,13 +461,13 @@ public class HistoryChartView_old extends View {
 		}
 	}
 
-	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	// »­Êý¾Ý
 	private void drawData(Canvas canvas, float[] data, int dataColor) {
 		Paint p = new Paint();
 		p.setAntiAlias(true);
 		p.setStrokeWidth(dataStrokeWidth);
 		p.setTextSize(mXlabelSize);
-		// ï¿½ï¿½ï¿½ï¿½
+		// ºáÏò
 		for (int i = 0; i < Xlabel.length; i++) {
 			int xLableInt = Integer.parseInt(Xlabel[i]);
 			float startX = Xpoint + i * Xscale + xFirstPointOffset;
@@ -481,7 +482,7 @@ public class HistoryChartView_old extends View {
 		}
 
 		p.setTextSize(mYLabelSize);
-		// ï¿½ï¿½ï¿½ï¿½
+		// ×ÝÏò
 		for (int i = 0; (yLength - i * Yscale) >= 0; i += yScaleForData) {
 			p.setColor(lineColor);
 			canvas.drawText(this.Ylabel[i], MarginLeft / 4,
@@ -493,20 +494,20 @@ public class HistoryChartView_old extends View {
 		}
 	}
 
-	// ï¿½ï¿½È¡room tempï¿½ï¿½ï¿½ï¿½Pathï¿½ï¿½ï¿½ï¿½
+	// »ñÈ¡room temp»æÏßPathÊý¾Ý
 	private void initRoomTempPath(float[] data) {
 		mRoomTempPath.reset();
 		Path path = new Path();
 		float pointX;
 		float pointY;
-		// ï¿½ï¿½ï¿½ï¿½
+		// ºáÏò
 		mRoomTempPath.moveTo(Xpoint + xFirstPointOffset,
 				getDataY(data[0], Ylabel));
 		path.moveTo(Xpoint + xFirstPointOffset,
 				getDataY(data[0], Ylabel));
 		for (int i = 0; i < Xlabel.length; i++) {
 			float startX = Xpoint + i * Xscale + xFirstPointOffset;
-			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			// »æÖÆÊý¾ÝÁ¬Ïß
 			if (i != 0) {
 				pointX = Xpoint + (i - 1) * Xscale + xFirstPointOffset;
 				pointY = getDataY(data[i - 1], Ylabel);
@@ -522,7 +523,7 @@ public class HistoryChartView_old extends View {
 	}
 
 	/**
-	 * ï¿½ï¿½È¡target tempï¿½ï¿½ï¿½ï¿½Pathï¿½ï¿½ï¿½ï¿½
+	 * »ñÈ¡target temp»æÏßPathÊý¾Ý
 	 * 
 	 * @param data
 	 */
@@ -531,13 +532,13 @@ public class HistoryChartView_old extends View {
 		Path path = new Path();
 		float pointX;
 		float pointY;
-		// ï¿½ï¿½ï¿½ï¿½
+		// ºáÏò
 		mTargetTempPath.moveTo(Xpoint + xFirstPointOffset,
 				getDataY(data[0], Ylabel));
 		path.moveTo(Xpoint + xFirstPointOffset, getDataY(data[0], Ylabel));
 		for (int i = 0; i < Xlabel.length; i++) {
 			float startX = Xpoint + i * Xscale + xFirstPointOffset;
-			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			// »æÖÆÊý¾ÝÁ¬Ïß
 			if (i != 0) {
 				pointX = Xpoint + (i - 1) * Xscale + xFirstPointOffset;
 				pointY = getDataY(data[i - 1], Ylabel);
@@ -552,7 +553,7 @@ public class HistoryChartView_old extends View {
 		mTargetTempPathMeasure = new PathMeasure(path, false);
 	}
 
-	// ï¿½ï¿½ï¿½Æ¾ï¿½ï¿½ï¿½Í¼
+	// »æÖÆ¾ØÐÎÍ¼
 	private void drawRect(Canvas canvas, float[] data, int dataColor) {
 		Paint p = new Paint();
 		float left;
@@ -560,16 +561,16 @@ public class HistoryChartView_old extends View {
 		float right;
 		float bottom;
 		float stopY = getDataY(Float.parseFloat(Ylabel[Ylabel.length - 1]),
-				Ylabel);// ï¿½ï¿½É«ï¿½ï¿½Yï¿½ï¿½Î»ï¿½ï¿½
+				Ylabel);// »ÒÉ«ÏßYÖáÎ»ÖÃ
 		float rectYScale = (Ypoint - stopY) / 100;
 
 		p.setAntiAlias(true);
 		p.setStrokeWidth(dataStrokeWidth);
 		p.setColor(dataColor);
 
-		// ï¿½ï¿½ï¿½ï¿½
+		// ºáÏò
 		for (int i = 0; i < Xlabel.length; i++) {
-			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼
+			// »æÖÆÖùÐÎÍ¼
 			if (i != 0) {
 				left = Xpoint + (i - 1) * Xscale + xFirstPointOffset + Xscale
 						/ 6;
@@ -612,7 +613,7 @@ public class HistoryChartView_old extends View {
 	}
 
 	/**
-	 * ï¿½ï¿½È¡dataï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½Yï¿½ï¿½Öµ
+	 * »ñÈ¡data¶ÔÓ¦»æÖÆYµãÖµ
 	 * 
 	 * @param y
 	 * @return
@@ -680,13 +681,13 @@ public class HistoryChartView_old extends View {
 		roomTempValueAnimator = ValueAnimator.ofFloat(0,
 				mRoomTempPathMeasure.getLength());
 		roomTempValueAnimator.setDuration(duration);
-		// ï¿½ï¿½ï¿½Ù²ï¿½Öµï¿½ï¿½
+		// ¼õËÙ²åÖµÆ÷
 		roomTempValueAnimator.setInterpolator(new DecelerateInterpolator());
 		roomTempValueAnimator.addUpdateListener(new AnimatorUpdateListener() {
 			@Override
 			public void onAnimationUpdate(ValueAnimator animation) {
 				float value = (Float) animation.getAnimatedValue();
-				// ï¿½ï¿½È¡ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×°ï¿½ï¿½mCurrentPosition
+				// »ñÈ¡µ±Ç°µã×ø±ê·â×°µ½mCurrentPosition
 				mRoomTempPathMeasure.getPosTan(value, mCurrentPosition, null);
 				mRoomTempPath.lineTo(mCurrentPosition[0], mCurrentPosition[1]);
 				postInvalidate();
@@ -704,13 +705,13 @@ public class HistoryChartView_old extends View {
 		LogUtils.info(TAG,
 				"measure length = " + mTargetTempPathMeasure.getLength());
 		targetTempValueAnimator.setDuration(duration);
-		// ï¿½ï¿½ï¿½Ù²ï¿½Öµï¿½ï¿½
+		// ¼õËÙ²åÖµÆ÷
 		targetTempValueAnimator.setInterpolator(new DecelerateInterpolator());
 		targetTempValueAnimator.addUpdateListener(new AnimatorUpdateListener() {
 			@Override
 			public void onAnimationUpdate(ValueAnimator animation) {
 				float value = (Float) animation.getAnimatedValue();
-				// ï¿½ï¿½È¡ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×°ï¿½ï¿½mCurrentPosition
+				// »ñÈ¡µ±Ç°µã×ø±ê·â×°µ½mCurrentPosition
 				mTargetTempPathMeasure.getPosTan(value, mCurrentPosition, null);
 				mTargetTempPath
 						.lineTo(mCurrentPosition[0], mCurrentPosition[1]);
