@@ -1,0 +1,24 @@
+<resources>
+
+    <string name="app_name">HistoryDemo</string>
+    <string name="action_settings">Settings</string>
+    <string name="page_title">Title</string>
+
+    <string name="history">HISTORY</string>
+    <string name="history_title_name">History</string>
+    <string name="history_day">Day</string>
+    <string name="history_week">Week</string>
+    <string name="history_month">Month</string>
+    <string name="history_year">Year</string>
+    <string name="history_Indoor">Indoor</string>
+    <string name="history_Temp">Temp</string>
+    <string name="history_Setpoint">Setpoint</string>
+    <string name="history_On">On</string>
+    <string name="history_Time">Time</string>
+    <string name="history_x_unit_day">(DAY)</string>
+    <string name="history_x_unit_hour">(HOUR)</string>
+    <string name="history_x_unit_month">(MONTH)</string>
+    <string name="history_y1_unit">(℃)</string>
+    <string name="history_y2_unit">(%)</string>
+    
+</resources>

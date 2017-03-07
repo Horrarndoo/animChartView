@@ -1,0 +1,117 @@
+<resources>
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+
+
+
+    -->
+    <style name="AppBaseTheme" parent="android:Theme.Light">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+
+
+
+        -->
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="android:Theme.Black.NoTitleBar">
+
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+        <item name="android:textColor">@color/saswell_yellow</item>
+    </style>
+
+    <!-- big text style -->
+    <style name="big_text_style">
+        <item name="android:textSize">22sp</item>
+        <item name="android:textColor">@color/saswell_yellow</item>
+    </style>
+
+    <!-- select proiect item -->
+    <style name="select_project_item20">
+        <item name="android:gravity">center</item>
+        <!-- <item name="android:textColor">@drawable/project_tv_selector</item> -->
+        <item name="android:textColor">@color/saswell_dark_grey</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <style name="select_project_item16">
+        <item name="android:gravity">center</item>
+        <!-- <item name="android:textColor">@drawable/project_tv_selector</item> -->
+        <item name="android:textColor">@color/saswell_dark_grey</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <!-- middle text style -->
+    <style name="middle_text_style">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <!-- normal text style -->
+    <style name="normal_text_style">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <!-- normal text style grey -->
+    <style name="normal_text_style_grey">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/saswell_light_grey</item>
+    </style>
+
+    <!-- small text style -->
+    <style name="small_text_style">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <!-- smaller text style -->
+    <style name="smaller_text_style">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <!-- temperature text style -->
+    <style name="temperature_text_style">
+        <item name="android:textSize">80sp</item>
+    </style>
+
+    <!-- small text style2 -->
+    <style name="small_text_style2">
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">@color/saswell_yellow</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="add_house_dialog_button">
+        <item name="android:textSize">22sp</item>
+    </style>
+
+    <style name="history_select_style" parent="android:Widget.TextView">
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:padding">5dp</item>
+    </style>
+    
+    
+    <!-- zyw add style for history view -->
+    <style name="history_mode_view_style">
+        <item name="android:background">@drawable/history_mode_background_selector</item>
+        <item name="android:textColor">@color/saswell_light_grey</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="select_text_size">@dimen/history_mode_select_text_size</item>
+        <item name="un_select_text_size">@dimen/history_mode_un_select_text_size</item>
+    </style>
+    <style name="history_tip_view_style">
+        <item name="android:textColor">@color/saswell_light_grey2</item>
+        <item name="android:textSize">@dimen/history_tips_textSize</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+</resources>

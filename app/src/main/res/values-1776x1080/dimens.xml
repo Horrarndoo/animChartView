@@ -1,0 +1,44 @@
+<resources>
+
+    <!-- HistoryModeView margin & size -->
+    <dimen name="history_mode_height">70dp</dimen>
+    <dimen name="history_mode_margin_left">10dp</dimen>
+    <dimen name="history_mode_margin_right">10dp</dimen>
+    <dimen name="history_mode_select_text_size">18sp</dimen>
+    <dimen name="history_mode_un_select_text_size">14sp</dimen>
+
+    <!-- HistoryChartView margins & size -->
+    <dimen name="history_margin_bottom">150dp</dimen>
+    <dimen name="history_margin_left">100dp</dimen>
+    <dimen name="history_margin_right">100dp</dimen>
+    <dimen name="history_margin_top">150dp</dimen>
+    <dimen name="history_xlabel_text_size">35sp</dimen>
+    <dimen name="history_ylabel_text_size">50sp</dimen>
+    <dimen name="history_x_unit_text_size">35sp</dimen>
+    <dimen name="history_y_unit_text_size">40sp</dimen>
+    <dimen name="history_line_stroke_width">4sp</dimen>
+    <dimen name="history_data_stroke_width">7sp</dimen>
+    <dimen name="history_circle_radius">9sp</dimen>
+    <dimen name="history_x_first_point_offset">30sp</dimen>
+
+    <!-- HistoryTipsView margin & size -->
+    <dimen name="history_tips_margin_bottom">10dp</dimen>
+    <dimen name="history_tips_margin_left">50dp</dimen>
+    <dimen name="history_tips_margin_right">10dp</dimen>
+    <dimen name="history_tips_textSize">10sp</dimen>
+    <dimen name="history_tips_padding_top">5dp</dimen>
+
+    <!-- HistoryControlView margin & size -->
+    <dimen name="history_view_target_text_margin_left">20dp</dimen>
+    <dimen name="history_view_target_temp_size">100sp</dimen>
+    <dimen name="history_view_current_temp_size">70sp</dimen>
+    <dimen name="history_view_add_temp_size">70dp</dimen>
+    <dimen name="history_view_minus_temp_size">70dp</dimen>
+    <dimen name="history_view_temp_view_margin_top">30dp</dimen>
+    <dimen name="history_view_temp_view_margin_bottom">10dp</dimen>
+    <dimen name="history_view_add_minus_margin_right">20dp</dimen>
+    
+
+    <dimen name="activity_horizontal_margin">128dp</dimen>
+
+</resources>

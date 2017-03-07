@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="saswell_black">#FF000000</color>
+    <color name="saswell_yellow">#FFFF9500</color>
+    <color name="saswell_white">#FFFFFFFF</color>
+    <color name="saswell_light_grey">#FF808080</color>
+    <color name="saswell_dark_grey">#FF333333</color>
+    <color name="saswell_blue">#FF007AFF</color>
+    <color name="saswell_green">#FF00FF00</color>
+
+    <color name="saswell_yellow_translucent">#80FF9500</color>
+
+    <color name="saswell_grey_line">#FF808080</color>
+    <color name="saswell_setpoint_temp">#FFFF9500</color>
+    <color name="saswell_indoor_temp">#FFffffff</color>
+    <color name="saswell_power_time">#FF4a2317</color>
+    <color name="saswell_light_grey2">#FFAAAAAA</color>
+
+</resources>
