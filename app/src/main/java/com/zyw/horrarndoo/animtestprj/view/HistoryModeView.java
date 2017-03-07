@@ -12,7 +12,7 @@ import com.zyw.horrarndoo.animtestprj.R;
 /**
  * 历史数据查询界面模式自定义View
  * @author zyw
- * @creation 2016-03-06
+ * @creation 2017-03-06
  */
 public class HistoryModeView extends LinearLayout {
 	private LinearLayout ll_click_view;

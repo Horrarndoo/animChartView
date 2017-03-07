@@ -22,9 +22,9 @@ import com.zyw.horrarndoo.animtestprj.utils.LogUtils;
 
 /**
  * 历史记录查询图表
- *
+ * 基于pathMeasure+DashPathEffect+属性动画实现
  * @author zyw
- * @creation 2016-03-06
+ * @creation 2017-03-06
  */
 public class HistoryChartView extends View {
 
