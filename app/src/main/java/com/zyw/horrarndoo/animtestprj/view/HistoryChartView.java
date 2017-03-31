@@ -23,6 +23,7 @@ import com.zyw.horrarndoo.animtestprj.utils.LogUtils;
 /**
  * 历史记录查询图表
  * 基于pathMeasure+DashPathEffect+属性动画实现
+ *
  * @author zyw
  * @creation 2017-03-06
  */
@@ -60,6 +61,10 @@ public class HistoryChartView extends View {
     private PathMeasure mTargetTempPathMeasure;
     private Path mRoomTempPath;
     private Path mTargetTempPath;
+    /**
+     * 柱形绘制进度
+     */
+    private float mRectFration;
 
     // X,Y轴的单位长度
     private float Xscale = 20;
@@ -117,11 +122,12 @@ public class HistoryChartView extends View {
     private float[] targetTempDataArray = {16, 16, 16, 16, 16, 16, 16};
     private float[] powerOnTimeDataArray = {100, 100, 100, 100, 100, 100, 100};
 
-    // 设置每条柱状图的当前比例
-    private Float[] currentBarProgress;
+    /**
+     * 各条柱形图当前top值数组
+     */
+    private Float[]rectCurrentTops;
 
-    private ValueAnimator roomTempValueAnimator;
-    private ValueAnimator targetTempValueAnimator;
+    private ValueAnimator mValueAnimator;
 
     private Paint linePaint;
     private Paint targetTempPaint;
@@ -141,19 +147,6 @@ public class HistoryChartView extends View {
                             int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        initPaint();
-
-        initData();
-
-        initParams();
-
-        initPath();
-    }
-
-    public HistoryChartView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        LogUtils.error(TAG,
-                "HistoryChartView(Context context, AttributeSet attrs)");
         ta = context
                 .obtainStyledAttributes(attrs, R.styleable.HistoryChartView);
 
@@ -170,16 +163,12 @@ public class HistoryChartView extends View {
         ta.recycle();
     }
 
+    public HistoryChartView(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
     public HistoryChartView(Context context) {
-        super(context);
-
-        initPaint();
-
-        initData();
-
-        initParams();
-
-        initPath();
+        this(context, null);
     }
 
     /**
@@ -188,8 +177,7 @@ public class HistoryChartView extends View {
      * @param strAlldata
      */
     public void setData(String strAlldata, int mode) {
-        LogUtils.verbose(TAG, "strAlldata = " + strAlldata);
-
+        //LogUtils.verbose(TAG, "strAlldata = " + strAlldata);
         String[] allHistroyArray = strAlldata.split("-");
 
         String[] arrayRoomTempData = allHistroyArray[0].split(",");
@@ -212,9 +200,7 @@ public class HistoryChartView extends View {
 
         initPath();
 
-        startRoomTempAnimation();
-
-        startTargetTempAnimation();
+        startAnimation();
     }
 
     private void initPaint() {
@@ -247,10 +233,7 @@ public class HistoryChartView extends View {
         mRoomTempPath = new Path();
         mTargetTempPath = new Path();
 
-        currentBarProgress = new Float[roomTempDataArray.length];
-        for (int i = 0; i < roomTempDataArray.length; i++) {
-            currentBarProgress[i] = Ypoint;
-        }
+        rectCurrentTops = new Float[roomTempDataArray.length];
     }
 
     /**
@@ -575,15 +558,12 @@ public class HistoryChartView extends View {
             if (i != 0) {
                 left = Xpoint + (i - 1) * Xscale + xFirstPointOffset + Xscale
                         / 6;
-                top = Ypoint - data[i - 1] * rectYScale;
-                if (currentBarProgress[i] >= top + 15) {
-                    currentBarProgress[i] -= 15;
-                    postInvalidateDelayed(1);
-                }
+                top = Ypoint - data[i - 1] * rectYScale + lineStrokeWidth;//要绘制的rect最终top值
+                //起点top + (起点top - 终点top) * mRectFration
+                rectCurrentTops[i] = Ypoint - (Ypoint - top) * mRectFration;//根据fraction动态更新top值
                 right = left + Xscale * 4 / 6;
                 bottom = Ypoint;
-                // canvas.drawRect(left, top, right, bottom, p);
-                canvas.drawRect(left, currentBarProgress[i], right, bottom, p);
+                canvas.drawRect(left, rectCurrentTops[i], right, bottom, p);//每次valueAnimator更新时重绘最新top值
             }
         }
     }
@@ -672,46 +652,34 @@ public class HistoryChartView extends View {
         drawXLine(canvas, linePaint);
     }
 
-    private void startRoomTempAnimation() {
-        if (roomTempValueAnimator != null) {
-            roomTempValueAnimator.cancel();
+    private void startAnimation() {
+        if (mValueAnimator != null) {
+            mValueAnimator.cancel();
         }
-        final float length = mRoomTempPathMeasure.getLength();
-        roomTempValueAnimator = ValueAnimator.ofFloat(1, 0);
-        roomTempValueAnimator.setDuration(duration);
+        final float targetTempLength = mTargetTempPathMeasure.getLength();
+        final float roomTempLength = mRoomTempPathMeasure.getLength();
+        mValueAnimator = ValueAnimator.ofFloat(1, 0);
+        mValueAnimator.setDuration(duration);
         // 减速插值器
-        roomTempValueAnimator.setInterpolator(new DecelerateInterpolator());
-        roomTempValueAnimator.addUpdateListener(new AnimatorUpdateListener() {
+        mValueAnimator.setInterpolator(new DecelerateInterpolator());
+        mValueAnimator.addUpdateListener(new AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float fraction = (Float) animation.getAnimatedValue();
-                mRoomTempEffect = new DashPathEffect(new float[]{length, length}, fraction * length);
-                roomTempPaint.setPathEffect(mRoomTempEffect);
-                postInvalidate();
-            }
-        });
-        roomTempValueAnimator.start();
-    }
-
-    private void startTargetTempAnimation() {
-        if (targetTempValueAnimator != null) {
-            targetTempValueAnimator.cancel();
-        }
-        final float length = mTargetTempPathMeasure.getLength();
-        targetTempValueAnimator = ValueAnimator.ofFloat(1, 0);
-        targetTempValueAnimator.setDuration(duration);
-        // 减速插值器
-        targetTempValueAnimator.setInterpolator(new DecelerateInterpolator());
-        targetTempValueAnimator.addUpdateListener(new AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float fraction = (Float) animation.getAnimatedValue();
-                mtargetTempEffect = new DashPathEffect(new float[]{length, length}, fraction * length);
+                //更新mtargetTempEffect
+                mtargetTempEffect = new DashPathEffect(new float[]{targetTempLength,
+                        targetTempLength}, fraction * targetTempLength);
                 targetTempPaint.setPathEffect(mtargetTempEffect);
+                //更新mRoomTempEffect
+                mRoomTempEffect = new DashPathEffect(new float[]{roomTempLength, roomTempLength},
+                        fraction * roomTempLength);
+                roomTempPaint.setPathEffect(mRoomTempEffect);
+                //更新rect绘制fraction进度
+                mRectFration = 1 - fraction;//fraction是1->0 我们需要的柱形图绘制比例是0->1
                 postInvalidate();
             }
         });
-        targetTempValueAnimator.start();
+        mValueAnimator.start();
     }
 
     public interface OnViewLayoutListener {
