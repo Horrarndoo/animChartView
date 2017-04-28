@@ -4,6 +4,7 @@ import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
@@ -21,8 +22,7 @@ import com.zyw.horrarndoo.animtestprj.utils.LogUtils;
 
 
 /**
- * 历史记录查询图表
- * 基于pathMeasure+DashPathEffect+属性动画实现
+ * 历史记录查询图表 基于pathMeasure+DashPathEffect+属性动画实现
  *
  * @author zyw
  * @creation 2017-03-06
@@ -103,9 +103,9 @@ public class HistoryChartView extends View {
     private float Ypoint;
 
     // X,Y轴上面的显示文字
-    private String[] Xlabel = {"1", "2", "3", "4", "5", "6", "7"};
-    private String[] Ylabel = {"0", "9", "18", "27", "36"};
-    private String[] Ylabel2 = {"0", "25", "50", "75", "100"};
+    private String[] Xlabel = { "1", "2", "3", "4", "5", "6", "7" };
+    private String[] Ylabel = { "0", "9", "18", "27", "36" };
+    private String[] Ylabel2 = { "0", "25", "50", "75", "100" };
 
     private final static int X_SCALE_FOR_DATA_DAY = 2;
     private final static int X_SCALE_FOR_DATA_WEEK = 1;
@@ -118,14 +118,14 @@ public class HistoryChartView extends View {
     private final static int YEAR_MODE = 3;
 
     // 曲线数据
-    private float[] roomTempDataArray = {15, 15, 15, 15, 15, 15, 15};
-    private float[] targetTempDataArray = {16, 16, 16, 16, 16, 16, 16};
-    private float[] powerOnTimeDataArray = {100, 100, 100, 100, 100, 100, 100};
+    private float[] roomTempDataArray = { 15, 15, 15, 15, 15, 15, 15 };
+    private float[] targetTempDataArray = { 16, 16, 16, 16, 16, 16, 16 };
+    private float[] powerOnTimeDataArray = { 100, 100, 100, 100, 100, 100, 100 };
 
     /**
      * 各条柱形图当前top值数组
      */
-    private Float[]rectCurrentTops;
+    private Float[] rectCurrentTops;
 
     private ValueAnimator mValueAnimator;
 
@@ -134,6 +134,10 @@ public class HistoryChartView extends View {
     private Paint roomTempPaint;
     private PathEffect mRoomTempEffect;
     private PathEffect mtargetTempEffect;
+    //定义一个内存中的图片，该图片将作为缓冲区
+    Bitmap mCacheBitmap = null;
+    //定义cacheBitmap上的Canvas对象
+    Canvas mCacheCanvas = null;
 
     public HistoryChartView(Context context, String[] xlabel, String[] ylabel,
                             float[] roomDataArray) {
@@ -177,7 +181,7 @@ public class HistoryChartView extends View {
      * @param strAlldata
      */
     public void setData(String strAlldata, int mode) {
-        //LogUtils.verbose(TAG, "strAlldata = " + strAlldata);
+        // LogUtils.verbose(TAG, "strAlldata = " + strAlldata);
         String[] allHistroyArray = strAlldata.split("-");
 
         String[] arrayRoomTempData = allHistroyArray[0].split(",");
@@ -230,6 +234,7 @@ public class HistoryChartView extends View {
      * 初始化数据
      */
     private void initData() {
+
         mRoomTempPath = new Path();
         mTargetTempPath = new Path();
 
@@ -240,7 +245,7 @@ public class HistoryChartView extends View {
      * 初始化宽高比例等数据
      */
     public void initParams() {
-        //LogUtils.error(TAG, "initParams");
+        // LogUtils.error(TAG, "initParams");
         Xpoint = MarginLeft;
 
         xLength = this.getWidth() - MarginLeft - MarginRight
@@ -250,6 +255,7 @@ public class HistoryChartView extends View {
         Ypoint = this.getHeight() - MarginBottom + mYLabelSize / 3;
         Xscale = (xLength - xFirstPointOffset * 2) / (this.Xlabel.length - 1);
         Yscale = yLength / (this.Ylabel.length - 1);
+
     }
 
     /**
@@ -484,13 +490,14 @@ public class HistoryChartView extends View {
     // 获取room temp绘线Path数据
     private void initRoomTempPath(float[] data) {
         mRoomTempPath.reset();
-        //Path path = new Path();
+        // Path path = new Path();
         float pointX;
         float pointY;
         // 横向
         mRoomTempPath.moveTo(Xpoint + xFirstPointOffset,
                 getDataY(data[0], Ylabel));
-        mRoomTempPath.moveTo(Xpoint + xFirstPointOffset, getDataY(data[0], Ylabel));
+        mRoomTempPath.moveTo(Xpoint + xFirstPointOffset,
+                getDataY(data[0], Ylabel));
         for (int i = 0; i < Xlabel.length; i++) {
             float startX = Xpoint + i * Xscale + xFirstPointOffset;
             // 绘制数据连线
@@ -558,12 +565,12 @@ public class HistoryChartView extends View {
             if (i != 0) {
                 left = Xpoint + (i - 1) * Xscale + xFirstPointOffset + Xscale
                         / 6;
-                top = Ypoint - data[i - 1] * rectYScale + lineStrokeWidth;//要绘制的rect最终top值
-                //起点top + (起点top - 终点top) * mRectFration
-                rectCurrentTops[i] = Ypoint - (Ypoint - top) * mRectFration;//根据fraction动态更新top值
+                top = Ypoint - data[i - 1] * rectYScale + lineStrokeWidth;// 要绘制的rect最终top值
+                // 起点top + (起点top - 终点top) * mRectFration
+                rectCurrentTops[i] = Ypoint - (Ypoint - top) * mRectFration;// 根据fraction动态更新top值
                 right = left + Xscale * 4 / 6;
                 bottom = Ypoint;
-                canvas.drawRect(left, rectCurrentTops[i], right, bottom, p);//每次valueAnimator更新时重绘最新top值
+                canvas.drawRect(left, rectCurrentTops[i], right, bottom, p);// 每次valueAnimator更新时重绘最新top值
             }
         }
     }
@@ -616,40 +623,50 @@ public class HistoryChartView extends View {
     protected void onLayout(boolean changed, int left, int top, int right,
                             int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        //LogUtils.error(TAG, "onLayout");
+        // LogUtils.error(TAG, "onLayout");
         initParams();
 
         if (onViewLayoutListener != null) {
             onViewLayoutListener.onLayoutSuccess();
         }
+
+        //创建一个与该View相同大小的缓冲区
+        mCacheBitmap = Bitmap.createBitmap(this.getWidth(), this.getHeight(), Bitmap.Config.ARGB_8888);
+        mCacheCanvas = new Canvas();
+        //设置cacheCanvas将会绘制到内存中cacheBitmap上
+        mCacheCanvas.setBitmap(mCacheBitmap);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawColor(Color.BLACK);
+        mCacheCanvas.drawColor(Color.BLACK);
 
-        drawGreyXLine(canvas, linePaint);
+        drawGreyXLine(mCacheCanvas, linePaint);
 
-        drawUnit(canvas);
+        drawUnit(mCacheCanvas);
 
         if (powerOnTimeDataArray.length > 1) {
-            drawRect(canvas, powerOnTimeDataArray, powerTimeLineColor);
+            drawRect(mCacheCanvas, powerOnTimeDataArray, powerTimeLineColor);
         }
 
-        canvas.drawPath(mRoomTempPath, roomTempPaint);
+        mCacheCanvas.drawPath(mRoomTempPath, roomTempPaint);
 
         if (roomTempDataArray.length > 1) {
-            drawData(canvas, roomTempDataArray, roomTempLineColor);
+            drawData(mCacheCanvas, roomTempDataArray, roomTempLineColor);
         }
 
-        canvas.drawPath(mTargetTempPath, targetTempPaint);
+        mCacheCanvas.drawPath(mTargetTempPath, targetTempPaint);
 
         if (targetTempDataArray.length > 1) {
-            drawData(canvas, targetTempDataArray, targetTempLineColor);
+            drawData(mCacheCanvas, targetTempDataArray, targetTempLineColor);
         }
 
-        drawXLine(canvas, linePaint);
+        drawXLine(mCacheCanvas, linePaint);
+
+        Paint bmpPaint = new Paint();
+        //将cacheBitmap绘制到该View组件
+        canvas.drawBitmap(mCacheBitmap, 0, 0, bmpPaint);
     }
 
     private void startAnimation() {
@@ -666,17 +683,20 @@ public class HistoryChartView extends View {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float fraction = (Float) animation.getAnimatedValue();
-                //更新mtargetTempEffect
-                mtargetTempEffect = new DashPathEffect(new float[]{targetTempLength,
-                        targetTempLength}, fraction * targetTempLength);
+                // 更新mtargetTempEffect
+                mtargetTempEffect = new DashPathEffect(new float[] {
+                        targetTempLength, targetTempLength }, fraction
+                        * targetTempLength);
                 targetTempPaint.setPathEffect(mtargetTempEffect);
-                //更新mRoomTempEffect
-                mRoomTempEffect = new DashPathEffect(new float[]{roomTempLength, roomTempLength},
-                        fraction * roomTempLength);
+                // 更新mRoomTempEffect
+                mRoomTempEffect = new DashPathEffect(new float[] {
+                        roomTempLength, roomTempLength }, fraction
+                        * roomTempLength);
                 roomTempPaint.setPathEffect(mRoomTempEffect);
-                //更新rect绘制fraction进度
-                mRectFration = 1 - fraction;//fraction是1->0 我们需要的柱形图绘制比例是0->1
-                postInvalidate();
+                // 更新rect绘制fraction进度
+                mRectFration = 1 - fraction;// fraction是1->0 我们需要的柱形图绘制比例是0->1
+                //postInvalidate();
+                invalidate();
             }
         });
         mValueAnimator.start();
